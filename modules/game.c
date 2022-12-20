@@ -136,10 +136,8 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   printf("\n");
 
   for(int i=0; i<Player->rerolls; i++){ //doin rerolls
-    int x=0;
-    int y=0;
-    for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) y=1;
-    if(y==0) x=1;
+    int x=1;
+    for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
     if(x==0){
       for(int j=0; j<Player->nbDices; j++){ //print player rolls
         printf("Dice %d: ", j+1);
@@ -155,9 +153,8 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
       int selection = provideIntegerChoice(1, Player->nbDices+1, "Please enter a valid choice\n", "Please enter a number\n");
       if(selection>0 && selection < Player->nbDices+1){
         is_used[selection-1]=true;
-        int y=0;
-        for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) y=1;
-        if(y==0) x=1;
+        x=1;
+        for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
       }
       else if(selection == Player->nbDices+1) x=1;
       else{
@@ -191,17 +188,15 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
         if(selection_2>0 && selection_2 < Fight->nbMonsters+1){
           item_use(player_roll[selection-1], Player->dice[selection-1].size, Player, 1, 0, Fight->monster, Fight->nbMonsters, selection_2-1);
           is_used[selection-1]=true;
-          int y=0;
-          for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) y=1;
-          if(y==0) x=1;
+          x=1;
+          for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
         }
       }
       else{
         item_use(player_roll[selection-1], Player->dice[selection-1].size, Player, 1, 0, Fight->monster, Fight->nbMonsters, 0);
         is_used[selection-1]=true;
-        int y=0;
-        for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) y=1;
-        if(y==0) x=1;
+        x=1;
+        for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
       }
     }
     else if(is_used[selection-1]){
@@ -228,9 +223,9 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   free(monster_roll);
   free(player_roll);
 
-  int y = 0;
-  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) y=1; //test if fight ended
-  if(y) return fight(Player, Fight, turn+1);
+  x=0;
+  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) x=1; //test if fight ended
+  if(x) return fight(Player, Fight, turn+1);
 
   printf("\033[%dmVictory!\033[%dm\n\n", GREEN, RESET_COLOR);
   sleep(1);
