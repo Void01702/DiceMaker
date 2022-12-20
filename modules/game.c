@@ -199,10 +199,10 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
         for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) x=true;
       }
     }
+    else if(selection == Player->nbDices+1) x=false;
     else if(is_used[selection-1]){
       printf("this dice is alread used\n");
     }
-    else if(selection == Player->nbDices+1) x=false;
     else{
       printf("Error: invalid input during player's turn\n");
       return -1;
@@ -215,9 +215,6 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   for(int i = 0; i<Fight->nbMonsters; i++){
     if(Fight->monster[i].HP>0) item_use(monster_roll[i], Fight->monster[i].dice[0].size, Fight->monster, Fight->nbMonsters, i, Player, 1, 0);
   }
-
-  //monsters turn
-  //WIP
 
   free(is_used);
   free(monster_roll);
