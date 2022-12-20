@@ -136,9 +136,9 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   printf("\n");
 
   for(int i=0; i<Player->rerolls; i++){ //doin rerolls
-    int x=1;
-    for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
-    if(x==0){
+    int x=false;
+    for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) x=true;
+    if(x){
       for(int j=0; j<Player->nbDices; j++){ //print player rolls
         printf("Dice %d: ", j+1);
         item_print(player_roll[j], Player->dice[j].size, true);
@@ -147,16 +147,16 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
       printf("\n");
       printf("   Choose the dices you don't want to reroll, then select continue.\n\n"); //select which to lock
     }
-    while(!x){
+    while(x){
       for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) printf(" [%d] Lock dice %d\n", j+1, j+1);
       printf(" [%d] Continue\n\n", Player->nbDices+1);
       int selection = provideIntegerChoice(1, Player->nbDices+1, "Please enter a valid choice\n", "Please enter a number\n");
       if(selection>0 && selection < Player->nbDices+1){
         is_used[selection-1]=true;
-        x=1;
-        for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
+        x=false;
+        for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) x=true;
       }
-      else if(selection == Player->nbDices+1) x=1;
+      else if(selection == Player->nbDices+1) x=false;
       else{
         printf("Error: invalid input in dice locking\n");
         return -1;
@@ -174,13 +174,13 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   printf("\n\033[%dm", RESET_COLOR);
 
   for(int i=0; i<Player->nbDices; i++) is_used[i] = false; //reusing is_used for using dices
-  int x=0;
+  int x=true;
   printf("   Choose what dices to use\n\n");
-  while(!x){  //until end turn
+  while(x){  //until end turn
     for(int i=0; i<Player->nbDices; i++) if(!is_used[i]) printf(" [%d] Use dice %d\n", i+1, i+1);
     printf(" [%d] End turn\n\n", Player->nbDices+1);
     int selection = provideIntegerChoice(1, Player->nbDices+1, "Please enter a valid choice\n", "Please enter a number\n"); //choose what dice to use
-    if(selection>0 && selection < Player->nbDices+1 && is_used[selection-1] == false){
+    if(selection>0 && selection < Player->nbDices+1 && !is_used[selection-1]){
       if(player_roll[selection-1].type == ATTACK || player_roll[selection-1].type == COMBINED_TARGET){ //if it needs a target select
         for(int j=0; j<Fight->nbMonsters; j++) printf(" [%d] select monster %d\n", j+1, j+1);
         printf(" [%d] Cancel\n\n", Fight->nbMonsters+1);
@@ -188,21 +188,21 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
         if(selection_2>0 && selection_2 < Fight->nbMonsters+1){
           item_use(player_roll[selection-1], Player->dice[selection-1].size, Player, 1, 0, Fight->monster, Fight->nbMonsters, selection_2-1);
           is_used[selection-1]=true;
-          x=1;
-          for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
+          x=false;
+          for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) x=true;
         }
       }
       else{
         item_use(player_roll[selection-1], Player->dice[selection-1].size, Player, 1, 0, Fight->monster, Fight->nbMonsters, 0);
         is_used[selection-1]=true;
-        x=1;
-        for(int j=0; j<Player->nbDices; j++) if(is_used[j]==false) x=0;
+        x=false;
+        for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) x=true;
       }
     }
     else if(is_used[selection-1]){
       printf("this dice is alread used\n");
     }
-    else if(selection == Player->nbDices+1) x=1;
+    else if(selection == Player->nbDices+1) x=false;
     else{
       printf("Error: invalid input during player's turn\n");
       return -1;
@@ -223,8 +223,8 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   free(monster_roll);
   free(player_roll);
 
-  x=0;
-  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) x=1; //test if fight ended
+  x=false;
+  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) x=true; //test if fight ended
   if(x) return fight(Player, Fight, turn+1);
 
   printf("\033[%dmVictory!\033[%dm\n\n", GREEN, RESET_COLOR);
