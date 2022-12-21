@@ -128,10 +128,12 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   entity_print(Player); //print player UI
   printf("\n");
   for(int i=0; i<Fight->nbMonsters; i++){ //print monster UI
-    entity_print(&Fight->monster[i]);
-    printf("Roll: ");
-    item_print(monster_roll[i], Fight->monster[i].dice[0].size, true); //print monster rolls
-    printf("\n\n");
+    if(Fight->monster[i].HP>0){
+      entity_print(&Fight->monster[i]);
+      printf("Roll: ");
+      item_print(monster_roll[i], Fight->monster[i].dice[0].size, true); //print monster rolls
+      printf("\n\n");
+    }
   }
   printf("\n");
 
@@ -182,15 +184,16 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
     int selection = provideIntegerChoice(1, Player->nbDices+1, "Please enter a valid choice\n", "Please enter a number\n"); //choose what dice to use
     if(selection>0 && selection < Player->nbDices+1 && !is_used[selection-1]){
       if(player_roll[selection-1].type == ATTACK || player_roll[selection-1].type == COMBINED_TARGET){ //if it needs a target select
-        for(int j=0; j<Fight->nbMonsters; j++) printf(" [%d] select monster %d\n", j+1, j+1);
+        for(int j=0; j<Fight->nbMonsters; j++) if(Fight->monster[j].HP>0) printf(" [%d] select monster %d\n", j+1, j+1);
         printf(" [%d] Cancel\n\n", Fight->nbMonsters+1);
         int selection_2 = provideIntegerChoice(1, Fight->nbMonsters+1, "Please enter a valid choice\n", "Please enter a number\n");//choose selected target
-        if(selection_2>0 && selection_2 < Fight->nbMonsters+1){
+        if(selection_2>0 && (selection_2<Fight->nbMonsters+1) && Fight->monster[selection_2-1].HP>0){
           item_use(player_roll[selection-1], Player->dice[selection-1].size, Player, 1, 0, Fight->monster, Fight->nbMonsters, selection_2-1);
           is_used[selection-1]=true;
           x=false;
           for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) x=true;
         }
+        else if(selection_2>0 && (selection_2<Fight->nbMonsters+1) && Fight->monster[selection_2-1].HP<0) printf("This monster is already dead\n");
       }
       else{
         item_use(player_roll[selection-1], Player->dice[selection-1].size, Player, 1, 0, Fight->monster, Fight->nbMonsters, 0);
@@ -212,9 +215,7 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   for(int i = 0; i<Fight->nbMonsters; i++){ //monster turn
     Fight->monster[i].armor = 0;
   }
-  for(int i = 0; i<Fight->nbMonsters; i++){
-    if(Fight->monster[i].HP>0) item_use(monster_roll[i], Fight->monster[i].dice[0].size, Fight->monster, Fight->nbMonsters, i, Player, 1, 0);
-  }
+  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP>0) item_use(monster_roll[i], Fight->monster[i].dice[0].size, Fight->monster, Fight->nbMonsters, i, Player, 1, 0);
 
   free(is_used);
   free(monster_roll);
