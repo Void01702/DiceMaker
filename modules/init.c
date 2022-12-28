@@ -17,23 +17,6 @@ void init_creature(Entity* Creature, int hp, int dices, int dice_size, int rerol
   }
 }
 
-void init_player(Entity* Player){ //Create a player
-  init_creature(Player, 50, 2, 4, 2, 1);
-  strcpy(Player->name, "Player");
-  //Player->name = {'P', 'l', 'a', 'y', 'e', 'r', '\0'};
-  for(int i=0; i<MAX_DICES; i++){ //Adds defence items
-    for(int j=0; j<2; j++){
-      Player->dice[i].face[j].type = DEFENSE;
-      Player->dice[i].face[j].level = BASE_DEFENSE;
-    }
-  }
-  //Adds strong items
-  Player->dice[0].size = 6;
-  Player->dice[0].face[2].level = BASE_ATTACK*2;
-  Player->dice[1].size = 6;
-  Player->dice[1].face[2].level = BASE_ATTACK*2;
-}
-
 void init_fight(Encounter* Fight){ //Create a fight
   Fight->nbMonsters = 1;
   int RandMob = rand()%3;
@@ -78,4 +61,21 @@ void init_level(Encounter Level[11], int seed){ //Create a level
       init_fight(&Level[i]);
     }
   }
+}
+
+void init_player(Entity* Player){ //Create a player
+  init_creature(Player, 50, 2, 4, 2, 1);
+  strcpy(Player->name, "Player");
+  //Player->name = {'P', 'l', 'a', 'y', 'e', 'r', '\0'};
+  for(int i=0; i<MAX_DICES; i++){ //Adds defence items
+    for(int j=0; j<2; j++){
+      Player->dice[i].face[j].type = DEFENSE;
+      Player->dice[i].face[j].level = BASE_DEFENSE;
+    }
+  }
+  //Adds strong items
+  Player->dice[0].size = 6;
+  Player->dice[0].face[2].level = BASE_ATTACK*2;
+  Player->dice[1].size = 6;
+  Player->dice[1].face[2].level = BASE_ATTACK*2;
 }
