@@ -12,7 +12,7 @@ int showMainMenu(){ //Manages the main menu of the game.
 			char selection_2[100]={};
 			do{
 				while(getchar()!='\n'); //flush
-				printf(" [1] Normal\n [2] Hard (WIP)\n [3] Custom (WIP)\n\n\n");
+				printf(" [1] Normal\n [2] Hard (WIP)\n [3] Custom (WIP)\n\n");
 				scanf("%s", selection_2);
 				if(selection_2[0]=='s' && selection_2[1]=='e' && selection_2[2]=='e' && selection_2[3]=='d'){
 					printf("Please enter the seed\n");

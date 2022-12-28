@@ -39,11 +39,11 @@ void init_fight(Encounter* Fight){ //Create a fight
   int RandMob = rand()%3;
   switch(RandMob){
   case 0:;
-    init_creature(&Fight->monster[0], 30, 1, 6, 0, 1);
+    init_creature(&Fight->monster[0], /*30*/ 1, 1, 6, 0, 1);
     strcpy(Fight->monster[0].name, "Monster id1");
     break;
   case 1:;
-    init_creature(&Fight->monster[0], 40, 1, 6, 0, 2.0/3.0);
+    init_creature(&Fight->monster[0], /*40*/ 1, 1, 6, 0, 2.0/3.0);
     strcpy(Fight->monster[0].name, "Monster id2");
     for(int i=0; i<2; i++){
       Fight->monster[0].dice[0].face[i].type = DEFENSE;
@@ -52,9 +52,9 @@ void init_fight(Encounter* Fight){ //Create a fight
     break;
   case 2:;
     Fight->nbMonsters = 2;
-    init_creature(&Fight->monster[0], 20, 1, 4, 0, 0.5);
+    init_creature(&Fight->monster[0], /*20*/ 1, 1, 4, 0, 0.5);
     strcpy(Fight->monster[0].name, "Monster id3");
-    init_creature(&Fight->monster[1], 15, 1, 4, 0, 3.0/4.0);
+    init_creature(&Fight->monster[1], /*15*/ 1, 1, 4, 0, 3.0/4.0);
     strcpy(Fight->monster[1].name, "Monster id4");
     break;
   }

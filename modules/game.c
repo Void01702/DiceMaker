@@ -34,9 +34,9 @@ void item_print(Item Face, int NbFaces, bool UseCaps){ //print an item
 
 void dice_print(Entity Player){ //print a dice
   for(int i=0; i<Player.nbDices; i++){
-    printf("Dice %d: Size: %d\n", i+1, Player.dice[i].size);
+    printf("\nDice %d:\n", i+1);
     for(int j=0; j<Player.dice[i].size; j++){
-      printf("Face %d: ", j+1);
+      printf("%d: ", j+1);
       item_print(Player.dice[i].face[j], Player.dice[i].size, true);
       printf("\n");
     }
@@ -222,12 +222,52 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   free(player_roll);
 
   x=false;
-  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) x=true; //test if fight ended
-  if(x) return fight(Player, Fight, turn+1);
+  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) return fight(Player, Fight, turn+1); //test if fight ended
 
   printf("\033[%dmVictory!\033[%dm\n\n", GREEN, RESET_COLOR);
   sleep(1);
+  x=true;
+  while(x){
+    printf("   Choose which face to add to your dice\n");
+    for(int i=0; i<3; i++){
+      printf("\n [%d] ", i+1);
+      item_print(Fight->reward[i], 6, true);
+    }
+    printf("\n [4] Check your dices\n [5] Take none\n\n");
+    int selection = provideIntegerChoice(1, 5, "Please enter a valid choice\n", "Please enter a number\n"); //choose what dice to use
+    if(selection<4){
+      dice_print(*Player);
+      printf("\n");
+      sleep(1);
+      printf("Choose on what dice to add this face\n\n");
+      for(int i=0; i<Player->nbDices; i++) printf(" [%d] Dice %d\n", i+1, i+1);
+      printf(" [%d] Cancel\n\n", Player->nbDices+1);
+      int selection_2 = provideIntegerChoice(1, Player->nbDices+1, "Please enter a valid choice\n", "Please enter a number\n");
+      if(selection_2<=Player->nbDices){
+        printf("\n\nChoose what face to replace\n");
+        for(int i=0; i<Player->dice[selection_2-1].size; i++){
+          printf("\n [%d] ", i+1);
+          item_print(Player->dice[selection_2-1].face[i], Player->dice[selection_2-1].size, true);
+        }
+        printf("\n [%d] Cancel\n\n", Player->dice[selection_2-1].size+1);
+        int selection_3 = provideIntegerChoice(1, Player->dice[selection_2-1].size+1, "Please enter a valid choice\n", "Please enter a number\n");
+        if(selection_3<=Player->dice[selection_2-1].size){
+          strcpy(Player->dice[selection_2-1].face[selection_3-1].name, Fight->reward[selection-1].name);
+          Player->dice[selection_2-1].face[selection_3-1].type = Fight->reward[selection-1].type;
+          Player->dice[selection_2-1].face[selection_3-1].level = Fight->reward[selection-1].level;
+          Player->dice[selection_2-1].face[selection_3-1].child = Fight->reward[selection-1].child;
+          Fight->reward[selection-1].child = NULL;
 
+          sleep(1);
+          dice_print(*Player);
+          printf("\n");
+        }
+        x=false;
+      }
+    }
+    else if(selection==4) dice_print(*Player);
+    else x=false;
+  }
   return 0;
 }
 
