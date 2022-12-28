@@ -224,6 +224,11 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   x=false;
   for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) return fight(Player, Fight, turn+1); //test if fight ended
 
+  if(Player->HP<1){
+    printf("\033[%dmGAME OVER\033[%dm\n\n", RED, RESET_COLOR);
+    return 1;
+  }
+
   printf("\033[%dmVictory!\033[%dm\n\n", GREEN, RESET_COLOR);
   sleep(1);
   x=true;
@@ -279,24 +284,18 @@ int level_play(Entity* Player, Encounter Level[11]){ //start a level
         fight(Player, &Level[i], 0);
         break;
       case CHEST:;
-        printf("this is a chest\n");
+        printf("this is a chest\n\n");
         break;
       case EVENT:;
-        printf("this is an event\n");
+        printf("this is an event\n\n");
         break;
       case SHOP:;
-        printf("this is a shop\n");
+        printf("this is a shop\n\n");
         break;
       default:;
         printf("Error: unknown level\n\n\n");
         break;
     }
-    return 0;
-    //if(Level[i].type == FIGHT){
-    //  printf("  Battle!\n");
-    //  fight(Player, &Level[i], 1);
-    //  return 0;
-    //}
   }
   return 0;
 }
