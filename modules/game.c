@@ -1,5 +1,13 @@
 #include "header.h"
 
+void item_free(Item Face){
+  if(Face.child!=NULL){
+    item_free(Face.child[1]);
+    item_free(Face.child[2]);
+    free(Face.child);
+  }
+}
+
 void item_print(Item Face, int NbFaces, bool UseCaps){ //print an item
   int level = round_test(Face.level*NbFaces);
   switch(Face.type){
@@ -222,10 +230,14 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   free(player_roll);
 
   x=false;
-  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0) return fight(Player, Fight, turn+1); //test if fight ended
+  for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP > 0){ //test if fight ended
+    for(int j=0; j<3; j++) item_free(Fight->reward[j]);
+    return fight(Player, Fight, turn+1);
+  }
 
   if(Player->HP<1){
     printf("\033[%dmGAME OVER\033[%dm\n\n", RED, RESET_COLOR);
+    for(int j=0; j<3; j++) item_free(Fight->reward[j]);
     return 1;
   }
 
@@ -273,6 +285,7 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
     else if(selection==4) dice_print(*Player);
     else x=false;
   }
+  for(int j=0; j<3; j++) item_free(Fight->reward[j]);
   return 0;
 }
 
