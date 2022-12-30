@@ -44,11 +44,14 @@ typedef struct{
 
 #define MAX_DICES 5
 
+#define ARMOR 0
+#define MAX_TEMP_STATUS 1
+
 typedef struct{
 	char name[20];
 	int HP;
 	int maxHP;
-	int armor;
+	int status[1];
 	int nbDices;
 	Dice dice[MAX_DICES];
 	int rerolls;

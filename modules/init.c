@@ -5,7 +5,9 @@ void init_creature(Entity* Creature, int hp, int dices, int dice_size, int rerol
   //Creature->name = {'\0'};
   Creature->maxHP = hp;
   Creature->HP = Creature->maxHP;
-  Creature->armor = 0;
+  for(int i=0; i<MAX_TEMP_STATUS; i++){
+    Creature->status[i] = 0;
+  }
   Creature->nbDices = dices;
   Creature->rerolls = rerolls;
   for(int i=0; i<MAX_DICES; i++){

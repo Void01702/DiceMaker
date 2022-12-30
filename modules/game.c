@@ -78,15 +78,15 @@ void level_print(Encounter Level[11]){ //print a full level
 
 void entity_print(Entity* Creature){
   printf("%s\nHP: %d/%d\n", Creature->name, Creature->HP, Creature->maxHP);
-  if(Creature->armor > 0) printf("Armor: %d\n", Creature->armor);
+  if(Creature->status[ARMOR] > 0) printf("Armor: %d\n", Creature->status[ARMOR]);
 }
 
 void damage(Entity* Target, int power){
-  if(Target->armor <= 0) Target->HP = Target->HP - power;
-  else if(Target->armor > power) Target->armor = Target->armor - power;
+  if(Target->status[ARMOR] <= 0) Target->HP = Target->HP - power;
+  else if(Target->status[ARMOR] > power) Target->status[ARMOR] = Target->status[ARMOR] - power;
   else{
-    power = power - Target->armor;
-    Target->armor = 0;
+    power = power - Target->status[ARMOR];
+    Target->status[ARMOR] = 0;
     Target->HP = Target->HP - power;
   }
 }
@@ -111,7 +111,7 @@ void item_use(Item Face, int DiceLevel, Entity* Allies, int NbAllies, int NbUser
       }
       break;
     case DEFENSE:;
-      Allies[NbUser].armor = Allies[NbUser].armor + level;
+      Allies[NbUser].status[ARMOR] = Allies[NbUser].status[ARMOR] + level;
       break;
     default:
       break;
@@ -131,7 +131,9 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   Item* player_roll = malloc(sizeof(Item) * Player->nbDices); //player rolls
   for(int i=0; i<Player->nbDices; i++) player_roll[i] = Player->dice[i].face[rand()%Player->dice[i].size];
 
-  Player->armor = 0; //Player's turn
+  for(int i=0; i<MAX_TEMP_STATUS; i++){ //Player's turn
+    Player->status[i] = 0;
+  }
 
   //print UI
   entity_print(Player); //print player UI
@@ -222,7 +224,9 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   }
 
   for(int i = 0; i<Fight->nbMonsters; i++){ //monster turn
-    Fight->monster[i].armor = 0;
+    for(int j = 0; j<MAX_TEMP_STATUS; j++){
+      Fight->monster[i].status[j] = 0;
+    }
   }
   for(int i = 0; i<Fight->nbMonsters; i++) if(Fight->monster[i].HP>0) item_use(monster_roll[i], Fight->monster[i].dice[0].size, Fight->monster, Fight->nbMonsters, i, Player, 1, 0);
 
@@ -295,7 +299,9 @@ int level_play(Entity* Player, Encounter Level[11]){ //start a level
   for(int i=0; i<11; i++){
     switch(Level[i].type){
       case FIGHT:;
-        Player->armor = 0;
+        for(int j=0; j<MAX_TEMP_STATUS; j++){
+          Player->status[j] = 0;
+        }
         fight(Player, &Level[i], 0);
         break;
       case CHEST:;
