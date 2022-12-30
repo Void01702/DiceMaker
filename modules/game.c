@@ -269,6 +269,7 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
         printf("\n [%d] Cancel\n\n", Player->dice[selection_2-1].size+1);
         int selection_3 = provideIntegerChoice(1, Player->dice[selection_2-1].size+1, "Please enter a valid choice\n", "Please enter a number\n");
         if(selection_3<=Player->dice[selection_2-1].size){
+          item_free(Player->dice[selection_2-1].face[selection_3-1]);
           strcpy(Player->dice[selection_2-1].face[selection_3-1].name, Fight->reward[selection-1].name);
           Player->dice[selection_2-1].face[selection_3-1].type = Fight->reward[selection-1].type;
           Player->dice[selection_2-1].face[selection_3-1].level = Fight->reward[selection-1].level;
