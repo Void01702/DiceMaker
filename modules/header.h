@@ -19,7 +19,7 @@
 #define WHITE 37
 
 //dice value basic
-#define BASE_ATTACK 1.0
+#define BASE_ATTACK 2.0
 #define BASE_DEFENSE 1.0
 
 typedef enum {

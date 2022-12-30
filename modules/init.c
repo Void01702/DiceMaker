@@ -27,11 +27,11 @@ void init_fight(Encounter* Fight){ //Create a fight
   int RandMob = rand()%3;
   switch(RandMob){
   case 0:;
-    init_creature(&Fight->monster[0], /*30*/ 1, 1, 6, 0, 1.0, name_1);
+    init_creature(&Fight->monster[0], /*30*/ 1, 1, 6, 0, 1.0/2.0, name_1);
     strcpy(Fight->monster[0].name, "Monster id1");
     break;
   case 1:;
-    init_creature(&Fight->monster[0], /*40*/ 1, 1, 6, 0, 2.0/3.0, name_2);
+    init_creature(&Fight->monster[0], /*40*/ 1, 1, 6, 0, 1.0/3.0, name_2);
     strcpy(Fight->monster[0].name, "Monster id2");
     for(int i=0; i<2; i++){
       strcpy(Fight->monster[0].dice[0].face[i].name, "Defend");
@@ -41,16 +41,16 @@ void init_fight(Encounter* Fight){ //Create a fight
     break;
   case 2:;
     Fight->nbMonsters = 2;
-    init_creature(&Fight->monster[0], /*20*/ 1, 1, 4, 0, 0.5, name_2);
+    init_creature(&Fight->monster[0], /*20*/ 1, 1, 4, 0, 1.0/3.0, name_2);
     strcpy(Fight->monster[0].name, "Monster id3");
-    init_creature(&Fight->monster[1], /*15*/ 1, 1, 4, 0, 3.0/4.0, name_1);
+    init_creature(&Fight->monster[1], /*15*/ 1, 1, 4, 0, 1.0/2.0, name_1);
     strcpy(Fight->monster[1].name, "Monster id4");
     break;
   }
   for(int i=0; i<3; i++){ //generate reward
     strcpy(Fight->reward[i].name, "Heavy Slash");
     Fight->reward[i].type = ATTACK;
-    Fight->reward[i].level = BASE_ATTACK*2;
+    Fight->reward[i].level = BASE_ATTACK;
   }
 }
 
@@ -73,7 +73,7 @@ void init_level(Encounter Level[11], int seed){ //Create a level
 void init_player(Entity* Player){ //Create a player
   char name[20]={};
   strcpy(name, "Slash");
-  init_creature(Player, 50, 2, 4, 2, 1, name);
+  init_creature(Player, 50, 2, 4, 2, 0.5, name);
   strcpy(Player->name, "Player");
   //Player->name = {'P', 'l', 'a', 'y', 'e', 'r', '\0'};
   for(int i=0; i<MAX_DICES; i++){ //Adds defence items
@@ -86,8 +86,8 @@ void init_player(Entity* Player){ //Create a player
   //Adds strong items
   Player->dice[0].size = 6;
   strcpy(Player->dice[0].face[2].name, "Heavy Slash");
-  Player->dice[0].face[2].level = BASE_ATTACK*2;
+  Player->dice[0].face[2].level = BASE_ATTACK;
   Player->dice[1].size = 6;
   strcpy(Player->dice[1].face[2].name, "Heavy Slash");
-  Player->dice[1].face[2].level = BASE_ATTACK*2;
+  Player->dice[1].face[2].level = BASE_ATTACK;
 }
