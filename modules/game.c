@@ -10,6 +10,7 @@ void item_free(Item Face){
 
 void item_print(Item Face, int NbFaces, bool UseCaps){ //print an item
   int level = round_test(Face.level*NbFaces);
+  printf("%s: ", Face.name);
   switch(Face.type){
     case COMBINED_TARGET:;
       item_print(Face.child[0], NbFaces, UseCaps);
@@ -138,7 +139,7 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
   for(int i=0; i<Fight->nbMonsters; i++){ //print monster UI
     if(Fight->monster[i].HP>0){
       entity_print(&Fight->monster[i]);
-      printf("Roll: ");
+      printf("Roll:\n");
       item_print(monster_roll[i], Fight->monster[i].dice[0].size, true); //print monster rolls
       printf("\n\n");
     }
@@ -150,7 +151,7 @@ int fight(Entity* Player, Encounter* Fight, int turn){ //start a fight
     for(int j=0; j<Player->nbDices; j++) if(!is_used[j]) x=true;
     if(x){
       for(int j=0; j<Player->nbDices; j++){ //print player rolls
-        printf("Dice %d: ", j+1);
+        printf("Dice %d:\n", j+1);
         item_print(player_roll[j], Player->dice[j].size, true);
         printf("\n");
       }
